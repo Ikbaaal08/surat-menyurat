@@ -26,7 +26,9 @@ return new class extends Migration
     public function down()
     {
         Schema::table('attachments', function (Blueprint $table) {
-            //
+            if (Schema::hasColumn('attachments', 'original_name')) {
+                $table->dropColumn('original_name');
+            }
         });
     }
 };
