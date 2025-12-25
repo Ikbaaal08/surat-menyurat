@@ -92,9 +92,15 @@ class OutgoingLetterController extends Controller
             $user = auth()->user();
 
             if ($request->type != LetterType::OUTGOING->type()) throw new \Exception(__('menu.transaction.outgoing_letter'));
-            $newLetter = $request->validated();
-            $newLetter['user_id'] = $user->id;
-            $letter = Letter::create($newLetter);
+            $validated = $request->validated();
+
+            // If non-admin, enforce bidang_id to be user's bidang
+            if ($user->role != \App\Enums\Role::ADMIN->status()) {
+                $validated['bidang_id'] = $user->bidang_id;
+            }
+
+            $validated['user_id'] = $user->id;
+            $letter = Letter::create($validated);
             if ($request->hasFile('attachments')) {
                 foreach ($request->attachments as $attachment) {
                     $extension = $attachment->getClientOriginalExtension();
@@ -156,7 +162,11 @@ class OutgoingLetterController extends Controller
     public function update(UpdateLetterRequest $request, Letter $outgoing): RedirectResponse
     {
         try {
-            $outgoing->update($request->validated());
+            $validated = $request->validated();
+            if (auth()->user()->role != \App\Enums\Role::ADMIN->status()) {
+                unset($validated['bidang_id']);
+            }
+            $outgoing->update($validated);
             if ($request->hasFile('attachments')) {
                 foreach ($request->attachments as $attachment) {
                     $extension = $attachment->getClientOriginalExtension();

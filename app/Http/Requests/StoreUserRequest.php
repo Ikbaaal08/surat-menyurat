@@ -41,6 +41,7 @@ class StoreUserRequest extends FormRequest
             'name' => ['required'],
             'email' => ['required', Rule::unique('users')],
             'phone' => ['nullable'],
+            'bidang_id' => ['nullable', 'exists:bidangs,id'],
         ];
     }
 }

@@ -25,7 +25,8 @@ class Disposition extends Model
         'formatted_due_date',
     ];
 
-    public function getFormattedDueDateAttribute(): string {
+    public function getFormattedDueDateAttribute(): string
+    {
         return Carbon::parse($this->due_date)->isoFormat('dddd, D MMMM YYYY');
     }
 
@@ -41,7 +42,7 @@ class Disposition extends Model
 
     public function scopeSearch($query, $search)
     {
-        return $query->when($search, function($query, $find) {
+        return $query->when($search, function ($query, $find) {
             return $query
                 ->orWhere('content', 'LIKE', '%' . $find . '%')
                 ->orWhere('to', 'LIKE', $find . '%');

@@ -50,6 +50,7 @@ class UpdateLetterRequest extends FormRequest
             'description' => ['required'],
             'note' => ['nullable'],
             'classification_code' => ['required'],
+            'bidang_id' => ['nullable', 'exists:bidangs,id'],
         ];
     }
 }

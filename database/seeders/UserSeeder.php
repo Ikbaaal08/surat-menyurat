@@ -17,12 +17,16 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
-            'name' => 'Administrator',
-            'email' => 'admin@admin.com',
-            'phone' => '082121212121',
-            'password' => Hash::make('admin'),
-            'role' => Role::ADMIN->status(),
-        ]);
+        // Make admin seed idempotent
+        User::updateOrCreate(
+            ['email' => 'admin@admin.com'],
+            [
+                'name' => 'Administrator',
+                'phone' => '082121212121',
+                'password' => Hash::make('admin'),
+                'role' => Role::ADMIN->status(),
+                'is_active' => true,
+            ]
+        );
     }
 }

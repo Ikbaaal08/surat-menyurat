@@ -7,6 +7,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\Config;
 use App\Models\User;
+use App\Models\Bidang;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -26,6 +27,7 @@ class UserController extends Controller
         return view('pages.user', [
             'data' => User::render($request->search),
             'search' => $request->search,
+            'bidangs' => Bidang::all(),
         ]);
     }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\LetterType;
+use App\Enums\Role;
 use App\Helpers\GeneralHelper;
 use App\Http\Requests\UpdateConfigRequest;
 use App\Http\Requests\UpdateUserRequest;
@@ -28,14 +29,31 @@ class PageController extends Controller
      */
     public function index(Request $request): View
     {
-        $todayIncomingLetter = Letter::incoming()->today()->count();
-        $todayOutgoingLetter = Letter::outgoing()->today()->count();
-        $todayDispositionLetter = Disposition::today()->count();
+        $user = auth()->user();
+        $isAdmin = $user->role === Role::ADMIN->status();
+
+        // Query untuk surat - admin lihat semua, user bidang hanya lihat milik sendiri
+        $incomingQuery = Letter::incoming();
+        $outgoingQuery = Letter::outgoing();
+        $dispositionQuery = Disposition::query();
+
+        if (!$isAdmin) {
+            // User bidang hanya lihat surat yang mereka input sendiri
+            $incomingQuery->where('user_id', $user->id);
+            $outgoingQuery->where('user_id', $user->id);
+            $dispositionQuery->where('user_id', $user->id);
+        }
+
+        // Statistik hari ini
+        $todayIncomingLetter = (clone $incomingQuery)->today()->count();
+        $todayOutgoingLetter = (clone $outgoingQuery)->today()->count();
+        $todayDispositionLetter = (clone $dispositionQuery)->today()->count();
         $todayLetterTransaction = $todayIncomingLetter + $todayOutgoingLetter + $todayDispositionLetter;
 
-        $yesterdayIncomingLetter = Letter::incoming()->yesterday()->count();
-        $yesterdayOutgoingLetter = Letter::outgoing()->yesterday()->count();
-        $yesterdayDispositionLetter = Disposition::yesterday()->count();
+        // Statistik kemarin
+        $yesterdayIncomingLetter = (clone $incomingQuery)->yesterday()->count();
+        $yesterdayOutgoingLetter = (clone $outgoingQuery)->yesterday()->count();
+        $yesterdayDispositionLetter = (clone $dispositionQuery)->yesterday()->count();
         $yesterdayLetterTransaction = $yesterdayIncomingLetter + $yesterdayOutgoingLetter + $yesterdayDispositionLetter;
 
         return view('pages.dashboard', [
@@ -45,11 +63,13 @@ class PageController extends Controller
             'todayOutgoingLetter' => $todayOutgoingLetter,
             'todayDispositionLetter' => $todayDispositionLetter,
             'todayLetterTransaction' => $todayLetterTransaction,
-            'activeUser' => User::active()->count(),
+            'activeUser' => $isAdmin ? User::active()->count() : 1, // User hanya lihat diri sendiri
             'percentageIncomingLetter' => GeneralHelper::calculateChangePercentage($yesterdayIncomingLetter, $todayIncomingLetter),
             'percentageOutgoingLetter' => GeneralHelper::calculateChangePercentage($yesterdayOutgoingLetter, $todayOutgoingLetter),
             'percentageDispositionLetter' => GeneralHelper::calculateChangePercentage($yesterdayDispositionLetter, $todayDispositionLetter),
             'percentageLetterTransaction' => GeneralHelper::calculateChangePercentage($yesterdayLetterTransaction, $todayLetterTransaction),
+            'isAdmin' => $isAdmin,
+            'userBidang' => !$isAdmin ? $user->bidang : null,
         ]);
     }
 
@@ -73,14 +93,14 @@ class PageController extends Controller
         try {
             $newProfile = $request->validated();
             if ($request->hasFile('profile_picture')) {
-//               DELETE OLD PICTURE
+                //               DELETE OLD PICTURE
                 $oldPicture = auth()->user()->profile_picture;
                 if (str_contains($oldPicture, '/storage/avatars/')) {
                     $url = parse_url($oldPicture, PHP_URL_PATH);
                     Storage::delete(str_replace('/storage', 'public', $url));
                 }
 
-//                UPLOAD NEW PICTURE
+                //                UPLOAD NEW PICTURE
                 $filename = time() .
                     '-' . $request->file('profile_picture')->getFilename() .
                     '.' . $request->file('profile_picture')->getClientOriginalExtension();

@@ -69,6 +69,7 @@ class StoreLetterRequest extends FormRequest
             'note' => ['nullable'],
 
             'classification_code' => ['required'],
+            'bidang_id' => ['nullable', 'exists:bidangs,id'],
 
             // ✅ VALIDASI ATTACHMENT PDF
             'attachments' => ['required', 'array'],

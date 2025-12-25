@@ -59,6 +59,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('reference')->as('reference.')->middleware(['role:admin'])->group(function () {
         Route::resource('classification', \App\Http\Controllers\ClassificationController::class)->except(['show', 'create', 'edit']);
         Route::resource('status', \App\Http\Controllers\LetterStatusController::class)->except(['show', 'create', 'edit']);
+        Route::resource('bidang', \App\Http\Controllers\BidangController::class)->except(['show', 'create', 'edit']); // TAMBAHKAN INI
     });
 
 });

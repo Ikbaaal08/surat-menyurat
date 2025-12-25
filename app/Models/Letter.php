@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
+use App\Models\Bidang;
 
 class Letter extends Model
 {
@@ -30,7 +31,16 @@ class Letter extends Model
         'type',
         'classification_code',
         'user_id',
+        'bidang_id',
     ];
+
+    /**
+     * Letter belongs to a Bidang
+     */
+    public function bidang()
+    {
+        return $this->belongsTo(Bidang::class);
+    }
 
     /**
      * @var string[]
@@ -47,19 +57,23 @@ class Letter extends Model
         'formatted_updated_at',
     ];
 
-    public function getFormattedLetterDateAttribute(): string {
+    public function getFormattedLetterDateAttribute(): string
+    {
         return Carbon::parse($this->letter_date)->isoFormat('dddd, D MMMM YYYY');
     }
 
-    public function getFormattedReceivedDateAttribute(): string {
+    public function getFormattedReceivedDateAttribute(): string
+    {
         return Carbon::parse($this->received_date)->isoFormat('dddd, D MMMM YYYY');
     }
 
-    public function getFormattedCreatedAtAttribute(): string {
+    public function getFormattedCreatedAtAttribute(): string
+    {
         return $this->created_at->isoFormat('dddd, D MMMM YYYY, HH:mm:ss');
     }
 
-    public function getFormattedUpdatedAtAttribute(): string {
+    public function getFormattedUpdatedAtAttribute(): string
+    {
         return $this->updated_at->isoFormat('dddd, D MMMM YYYY, HH:mm:ss');
     }
 
@@ -92,21 +106,26 @@ class Letter extends Model
     {
         return $query->when($search, function ($query, $find) {
             return $query
-            ->where('reference_number', 'LIKE', "%$find%")
-            ->orWhere('agenda_number', 'LIKE', "%$find%")
-            ->orWhere('from', 'LIKE', "%$find%")
-            ->orWhere('to', 'LIKE', "%$find%")
-            ->orWhere('description', 'LIKE', "%$find%");
+                ->where('reference_number', 'LIKE', "%$find%")
+                ->orWhere('agenda_number', 'LIKE', "%$find%")
+                ->orWhere('from', 'LIKE', "%$find%")
+                ->orWhere('to', 'LIKE', "%$find%")
+                ->orWhere('description', 'LIKE', "%$find%");
         });
     }
 
     public function scopeRender($query, $search)
     {
+        // User bidang hanya bisa lihat surat yang mereka input sendiri
+        if (auth()->check() && auth()->user()->role != \App\Enums\Role::ADMIN->status()) {
+            $query->where('user_id', auth()->id());
+        }
+
         return $query
             ->with(['attachments', 'classification'])
             ->search($search)
             ->latest('letter_date')
-            ->paginate(Config::getValueByCode(ConfigEnum::PAGE_SIZE))
+            ->paginate((int) (Config::getValueByCode(ConfigEnum::PAGE_SIZE) ?? 15))
             ->appends([
                 'search' => $search,
             ]);

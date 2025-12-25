@@ -88,9 +88,16 @@ class IncomingLetterController extends Controller
                 throw new \Exception(__('menu.transaction.incoming_letter'));
             }
 
+            $validated = $request->validated();
+
+            // Ensure bidang assignment: non-admin users should have letter in their own bidang
+            if (auth()->user()->role != \App\Enums\Role::ADMIN->status()) {
+                $validated['bidang_id'] = auth()->user()->bidang_id;
+            }
+
             $letter = Letter::create(
                 array_merge(
-                    $request->validated(),
+                    $validated,
                     ['user_id' => auth()->id()]
                 )
             );
@@ -159,7 +166,12 @@ class IncomingLetterController extends Controller
     public function update(UpdateLetterRequest $request, Letter $incoming): RedirectResponse
     {
         try {
-            $incoming->update($request->validated());
+            $validated = $request->validated();
+            if (auth()->user()->role != \App\Enums\Role::ADMIN->status()) {
+                // non-admins cannot change bidang
+                unset($validated['bidang_id']);
+            }
+            $incoming->update($validated);
 
             if ($request->hasFile('attachments')) {
                 foreach ($request->file('attachments') as $file) {

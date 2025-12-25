@@ -37,11 +37,18 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'name' => ['required'],
             'email' => ['required', Rule::unique('users')->ignore($this->id)],
             'phone' => ['nullable'],
             'is_active' => ['nullable'],
         ];
+
+        // Only admin can set bidang
+        if (auth()->check() && auth()->user()->role == \App\Enums\Role::ADMIN->status()) {
+            $rules['bidang_id'] = ['nullable', 'exists:bidangs,id'];
+        }
+
+        return $rules;
     }
 }
