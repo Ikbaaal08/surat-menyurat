@@ -46,6 +46,7 @@ return [
         'admin' => 'Pengelola',
         'staff' => 'Staf',
         'active' => 'Aktif',
+        'bidang' => 'Bidang',
         'nonactive' => 'Nonaktif',
         'reset_password' => 'Setel ulang Kata Sandi menjadi bawaan?',
     ],

@@ -77,15 +77,6 @@
                         </tr>
                     </tbody>
                 @endif
-                <tfoot class="table-border-bottom-0">
-                    <tr>
-                        <th>{{ __('model.user.name') }}</th>
-                        <th>{{ __('model.user.email') }}</th>
-                        <th>{{ __('model.user.phone') }}</th>
-                        <th>{{ __('model.user.is_active') }}</th>
-                        <th>{{ __('menu.general.action') }}</th>
-                    </tr>
-                </tfoot>
             </table>
         </div>
     </div>
@@ -118,15 +109,6 @@
                                 @endforeach
                             </select>
                         </div>
-                        <!-- <div class="mb-3">
-                                    <label for="bidang_id" class="form-label">{{ __('model.user.bidang') }}</label>
-                                    <select name="bidang_id" id="bidang_id_create" class="form-select">
-                                        <option value="">-- {{ __('menu.general.select') }} --</option>
-                                        @foreach($bidangs as $bidang)
-                                            <option value="{{ $bidang->id }}">{{ $bidang->nama_bidang }}</option>
-                                        @endforeach
-                                    </select>
-                                </div> -->
                     @endif
                 </div>
                 <div class="modal-footer">
