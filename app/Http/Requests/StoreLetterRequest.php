@@ -42,15 +42,52 @@ class StoreLetterRequest extends FormRequest
     {
         return [
             'agenda_number' => ['required'],
-            'from' => [Rule::requiredIf($this->type == LetterType::INCOMING->type())],
-            'to' => [Rule::requiredIf($this->type == LetterType::OUTGOING->type())],
+
+            'from' => [
+                Rule::requiredIf($this->type == LetterType::INCOMING->type()),
+            ],
+
+            'to' => [
+                Rule::requiredIf($this->type == LetterType::OUTGOING->type()),
+            ],
+
             'type' => ['required'],
-            'reference_number' => ['required', Rule::unique('letters')],
-            'received_date' => [Rule::requiredIf($this->type == LetterType::INCOMING->type())],
+
+            'reference_number' => [
+                'required',
+                Rule::unique('letters'),
+            ],
+
+            'received_date' => [
+                Rule::requiredIf($this->type == LetterType::INCOMING->type()),
+            ],
+
             'letter_date' => ['required'],
+
             'description' => ['required'],
+
             'note' => ['nullable'],
+
             'classification_code' => ['required'],
+
+            // ✅ VALIDASI ATTACHMENT PDF
+            'attachments' => ['required', 'array'],
+            'attachments.*' => [
+                'required',
+                'file',
+                'mimes:pdf',
+                'max:2048', // 2MB (opsional, bisa diubah)
+            ],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'attachments.required' => 'Lampiran wajib diunggah.',
+            'attachments.array' => 'Lampiran tidak valid.',
+            'attachments.*.mimes' => 'Lampiran harus berformat PDF.',
+            'attachments.*.max' => 'Ukuran file maksimal 2MB.',
         ];
     }
 }
