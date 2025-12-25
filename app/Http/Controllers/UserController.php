@@ -40,7 +40,7 @@ class UserController extends Controller
         try {
             $newUser = $request->validated();
             // $newUser['password'] = Hash::make(Config::getValueByCode(ConfigEnum::DEFAULT_PASSWORD));
-            $newUser['password'] = Hash::make('jancok');
+            $newUser['password'] = Hash::make('pengguna123');
             User::create($newUser);
             return back()->with('success', __('menu.general.success'));
         } catch (\Throwable $exception) {
