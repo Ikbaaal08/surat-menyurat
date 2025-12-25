@@ -115,10 +115,11 @@ class IncomingLetterController extends Controller
                     $file->storeAs('attachments', $filename, 'public');
 
                     Attachment::create([
-                        'filename'  => $filename,
-                        'extension' => $extension,
-                        'user_id'   => auth()->id(),
-                        'letter_id' => $letter->id,
+                        'filename'      => $filename,
+                        'original_name' => $file->getClientOriginalName(),
+                        'extension'     => $extension,
+                        'user_id'       => auth()->id(),
+                        'letter_id'     => $letter->id,
                     ]);
                 }
             }
@@ -178,10 +179,11 @@ class IncomingLetterController extends Controller
                     $file->storeAs('attachments', $filename, 'public');
 
                     Attachment::create([
-                        'filename'  => $filename,
-                        'extension' => $extension,
-                        'user_id'   => auth()->id(),
-                        'letter_id' => $incoming->id,
+                        'filename'      => $filename,
+                        'original_name' => $file->getClientOriginalName(),
+                        'extension'     => $extension,
+                        'user_id'       => auth()->id(),
+                        'letter_id'     => $incoming->id,
                     ]);
                 }
             }

@@ -103,10 +103,11 @@ class OutgoingLetterController extends Controller
                     $filename = str_replace(' ', '-', $filename);
                     $attachment->storeAs('public/attachments', $filename);
                     Attachment::create([
-                        'filename' => $filename,
-                        'extension' => $extension,
-                        'user_id' => $user->id,
-                        'letter_id' => $letter->id,
+                        'filename'      => $filename,
+                        'original_name' => $attachment->getClientOriginalName(),
+                        'extension'     => $extension,
+                        'user_id'       => $user->id,
+                        'letter_id'     => $letter->id,
                     ]);
                 }
             }
@@ -164,10 +165,11 @@ class OutgoingLetterController extends Controller
                     $filename = str_replace(' ', '-', $filename);
                     $attachment->storeAs('public/attachments', $filename);
                     Attachment::create([
-                        'filename' => $filename,
-                        'extension' => $extension,
-                        'user_id' => auth()->user()->id,
-                        'letter_id' => $outgoing->id,
+                        'filename'      => $filename,
+                        'original_name' => $attachment->getClientOriginalName(),
+                        'extension'     => $extension,
+                        'user_id'       => auth()->user()->id,
+                        'letter_id'     => $outgoing->id,
                     ]);
                 }
             }
