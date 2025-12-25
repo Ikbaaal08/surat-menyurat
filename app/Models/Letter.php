@@ -90,12 +90,13 @@ class Letter extends Model
 
     public function scopeSearch($query, $search)
     {
-        return $query->when($search, function($query, $find) {
+        return $query->when($search, function ($query, $find) {
             return $query
-                ->where('reference_number', $find)
-                ->orWhere('agenda_number', $find)
-                ->orWhere('from', 'LIKE', $find . '%')
-                ->orWhere('to', 'LIKE', $find . '%');
+            ->where('reference_number', 'LIKE', "%$find%")
+            ->orWhere('agenda_number', 'LIKE', "%$find%")
+            ->orWhere('from', 'LIKE', "%$find%")
+            ->orWhere('to', 'LIKE', "%$find%")
+            ->orWhere('description', 'LIKE', "%$find%");
         });
     }
 

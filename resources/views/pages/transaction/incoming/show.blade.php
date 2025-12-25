@@ -45,4 +45,37 @@
         </div>
     </x-letter-card>
 
+    @if($data->dispositions->count())
+    <div class="divider mt-4">
+        <div class="divider-text">Disposisi Surat</div>
+    </div>
+
+    @foreach($data->dispositions as $disposition)
+        <div class="card mb-3">
+            <div class="card-body">
+                <dl class="row mb-0">
+
+                    <dt class="col-sm-3">Tujuan</dt>
+                    <dd class="col-sm-9">{{ $disposition->to }}</dd>
+
+                    <dt class="col-sm-3">Batas Waktu</dt>
+                    <dd class="col-sm-9">{{ $disposition->due_date }}</dd>
+
+                    <dt class="col-sm-3">Isi Disposisi</dt>
+                    <dd class="col-sm-9">{{ $disposition->content }}</dd>
+
+                    <dt class="col-sm-3">Status</dt>
+                    <dd class="col-sm-9">{{ $disposition->status?->status }}</dd>
+
+                    <dt class="col-sm-3">Catatan</dt>
+                    <dd class="col-sm-9">{{ $disposition->note }}</dd>
+
+                </dl>
+            </div>
+        </div>
+    @endforeach
+@else
+    <p class="text-muted mt-3">Belum ada disposisi.</p>
+@endif
+
 @endsection

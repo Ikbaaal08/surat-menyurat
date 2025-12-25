@@ -55,7 +55,9 @@
                 <tr>
                     <th>{{ __('model.letter.agenda_number') }}</th>
                     <th>{{ __('model.letter.reference_number') }}</th>
-                    <th>{{ __('model.letter.to') }}</th>
+                    <th>{{ __('model.letter.from') }}</th>
+                    <th>{{ __('model.letter.description') }}</th>
+                    <th>{{ __('model.letter.received_date') }}</th>
                     <th>{{ __('model.letter.letter_date') }}</th>
                 </tr>
                 </thead>
@@ -68,7 +70,9 @@
                             <td>
                                 <a href="{{ route('transaction.outgoing.show', $agenda) }}">{{ $agenda->reference_number }}</a>
                             </td>
-                            <td>{{ $agenda->to }}</td>
+                            <td>{{ $agenda->from }}</td>
+                            <td>{{ Str::limit($agenda->description, 50) }}</td>
+                            <td>{{ $agenda->formatted_received_date }}</td>
                             <td>{{ $agenda->formatted_letter_date }}</td>
                         </tr>
                     @endforeach
@@ -86,7 +90,9 @@
                 <tr>
                     <th>{{ __('model.letter.agenda_number') }}</th>
                     <th>{{ __('model.letter.reference_number') }}</th>
-                    <th>{{ __('model.letter.to') }}</th>
+                    <th>{{ __('model.letter.from') }}</th>
+                    <th>{{ __('model.letter.description') }}</th>
+                    <th>{{ __('model.letter.received_date') }}</th>
                     <th>{{ __('model.letter.letter_date') }}</th>
                 </tr>
                 </tfoot>
