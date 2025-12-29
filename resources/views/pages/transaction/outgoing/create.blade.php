@@ -11,19 +11,19 @@
             <div class="card-body row">
                 <input type="hidden" name="type" value="outgoing">
                 <div class="col-sm-12 col-12 col-md-6 col-lg-4">
-                    <x-input-form name="reference_number" :label="__('model.letter.reference_number')"/>
+                    <x-input-form name="reference_number" :label="__('model.letter.reference_number')" required/>
                 </div>
                 <div class="col-sm-12 col-12 col-md-6 col-lg-4">
-                    <x-input-form name="to" :label="__('model.letter.to')"/>
+                    <x-input-form name="to" :label="__('model.letter.to')" required/>
                 </div>
                 <div class="col-sm-12 col-12 col-md-6 col-lg-4">
-                    <x-input-form name="agenda_number" :label="__('model.letter.agenda_number')"/>
+                    <x-input-form name="agenda_number" :label="__('model.letter.agenda_number')" required/>
                 </div>
                 <div class="col-sm-12 col-12 col-md-6 col-lg-12">
-                    <x-input-form name="letter_date" :label="__('model.letter.letter_date')" type="date"/>
+                    <x-input-form name="letter_date" :label="__('model.letter.letter_date')" type="date" required/>
                 </div>
                 <div class="col-sm-12 col-12 col-md-12 col-lg-12">
-                    <x-input-textarea-form name="description" :label="__('model.letter.description')"/>
+                    <x-input-textarea-form name="description" :label="__('model.letter.description')" required/>
                 </div>
                 <div class="col-sm-12 col-12 col-md-6 col-lg-4">
                     <div class="mb-3">
@@ -45,7 +45,7 @@
                 <div class="col-sm-12 col-12 col-md-6 col-lg-4">
                     <div class="mb-3">
                         <label for="attachments" class="form-label">{{ __('model.letter.attachment') }}</label>
-                        <input type="file" class="form-control @error('attachments') is-invalid @enderror" id="attachments" name="attachments[]" multiple />
+                        <input type="file" class="form-control @error('attachments') is-invalid @enderror" id="attachments" name="attachments[]" multiple accept="application/pdf"/>
                         <span class="error invalid-feedback">{{ $errors->first('attachments') }}</span>
                     </div>
                 </div>
